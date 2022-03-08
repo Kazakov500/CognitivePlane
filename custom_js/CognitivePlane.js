@@ -534,7 +534,7 @@ function getHexPallet(pallet) {
 
 function init_tsne()
 {
-    worker = new Worker('/js/tsne/worker.js');
+    worker = new Worker('../js/tsne/worker.js');
 
     // тут инит гугл чартов
 
