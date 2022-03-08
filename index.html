@@ -1,0 +1,172 @@
+<link href="css/CognitivePlane.css" rel="stylesheet">
+<script src="vendor/jquery/jquery.min.js"></script>
+<script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/json2html/1.4.0/json2html.min.js"></script>
+
+
+
+
+<div class="wrapper" style="margin: 0 auto; width: 100%; height: 100%;">
+    <div style="float: left; width: 50%; height: 100%;">
+        <div style="float: left; width: 100%; height: 44vh;">
+            <div id="contour_chart" class="chart"></div>
+        </div>
+        <div style="float: left; width: 100%; height: 44vh;">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">t-SNE</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Конфигурация множества</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="contact-tab" data-toggle="tab" href="#view_settings" role="tab" aria-controls="view_settings" aria-selected="false">Настройка отображения</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="contact-tab" data-toggle="tab" href="#selected_element" role="tab" aria-controls="selected_element" aria-selected="false">Выбранный элемент</a>
+                </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                    <div class="container_div">
+                        <div class="panel_div">
+                            <div id="control-panel" data-sr="enter left over 8s">
+                                <div class="param">
+                                    <label for="param-perplexity">T-SNE: Perplexity</label>
+                                    <input id="param-perplexity" type="range" min="1" max="100" value="1", step="1">
+                                    <output for="param-perplexity" id="param-perplexity-value">1</output>
+                                </div>
+                                <div class="param">
+                                    <label for="param-earlyexag">T-SNE: Early Exaggeration</label>
+                                    <input id="param-earlyexag" type="range" min="1.1" max="10.0" value="6.8", step="0.1">
+                                    <output for="param-earlyexag" id="param-earlyexag-value">6.8</output>
+                                </div>
+                                <div class="param">
+                                    <label for="param-learningrate">T-SNE: Learning Rate</label>
+                                    <input id="param-learningrate" type="range" min="1" max="1000" value="200", step="1">
+                                    <output for="param-learningrate" id="param-learningrate-value">200</output>
+                                </div>
+                                <div class="param">
+                                    <label for="param-maxiter">T-SNE: Max Iterations</label>
+                                    <input id="param-maxiter" type="range" min="10" max="500" value="100", step="10">
+                                    <output for="param-maxiter" id="param-maxiter-value">100</output>
+                                </div>
+                                <div class="param">
+                                    <label for="param-distance">T-SNE: Distance Metric</label>
+                                    <select id="param-distance" name="param-distance">
+                                        <option value="euclidean" selected>Euclidean distance</option>
+                                        <option value="manhattan">Manhattan distance</option>
+                                        <option value="jaccard">Jaccard dissimilarity</option>
+                                        <option value="dice">Dice dissimilarity</option>
+                                    </select>
+                                    <output for="param-distance" id="param-distance-value"></output>
+                                </div>
+
+
+                                <div id="run-button1" class="run-button">Run</div>
+                                <div id="progress">
+                                    <div><span id="progress-status">Click Run button to begin</span></div>
+                                    <div>Iteration: <span id="progress-iter"></span></div>
+                                    <div>Error: <span id="progress-error"></span></div>
+                                    <div>Gradient vector norm: <span id="progress-gradnorm"></span></div>
+                                </div>
+                            </div>
+                            <div id="embedding-space" data-sr="fade in over 5s"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                    <div class="param">
+                        <div id="run-button2" class="run-button">Run</div>
+                        <label for="param-set_val_test">Конфигурационный иерархический дескриптор в виде JSON</label><br>
+                        <textarea id="param-set_val_conf_descrp_json" style="width: 100%; height: 350px;">
+{
+    "layers": [
+        {
+            "elements": [
+                {"prc": [0,1,0.2], "atomic_number": [10,12]},
+                {"prc": [0,1,0.2], "atomic_number": 15}
+            ],
+            "width": [0,2,1]
+        },
+        {
+            "elements": [
+                {"prc": 1, "atomic_number": 20}
+            ],
+            "width": [0,2,1]
+        }
+    ]
+}
+                        </textarea>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="view_settings" role="tabpanel" aria-labelledby="contact-tab">
+                    <div id="run-button3" class="run-button">Run</div>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="cb_logs">
+                        <label class="form-check-label" for="cb_logs">Логи</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="cb_logs_time" checked>
+                        <label class="form-check-label" for="cb_logs_time">Время выполнения</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="cb_t_sne" checked>
+                        <label class="form-check-label" for="cb_t_sne">t-SNE</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="cb_visualization" checked>
+                        <label class="form-check-label" for="cb_visualization">Визуализация</label>
+                    </div>
+                    <br>
+                    <div class="form-check">
+                        <span>Тест скорости преобоазования</span><br>
+                        <div class="input-group mb-3">
+
+                            <div class="input-group-prepend">
+
+                                <div class="input-group-text">
+                                    <input type="checkbox" id="cb_speed_test">
+                                </div>
+                                <span class="input-group-text">Итераций</span>
+                            </div>
+                            <input type="text" class="form-control" id="iteration_speed_test" value="1">
+                            <span class="input-group-text">{{X}}</span>
+                            <input type="text" class="form-control" id="replase_x" value="10">
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="selected_element" role="tabpanel" aria-labelledby="contact-tab">
+                    <div id="selected_json"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="float: left; width: 50%; height: 100%;">
+        <div style="float: left; width: 100%; height: 44vh;">
+            <div id="chart_mesh3d" class="chart"></div>
+        </div>
+        <div style="float: left; width: 100%; height: 44vh;">
+            <div id="scatter_chart" class="chart"></div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+<div id="graph"></div>
+
+<script src="js/jquery.json-viewer.js"></script>
+<link href="css/jquery.json-viewer.css" type="text/css" rel="stylesheet" />
+
+<script src=" custom_js/color_pallets.js"></script>
+<script src=" custom_js/chem_elements_db.js"></script>
+<script src=" custom_js/CognitivePlane.js"></script>
+
