@@ -1,0 +1,33 @@
+    .content-wrapper
+    {
+      border-radius: 10px 0px 0px 0px;
+      height: calc(40vh);
+    }
+
+    .err
+    {
+      background: #ffc8c8;
+    }
+    .yes
+    {
+      background: #d0ffc8;
+    }
+
+    .scrollspy
+    {
+      position: relative;
+      height: calc(76vh);
+      overflow: auto;
+    }
+
+    #navbar
+    {
+      height: 400px;
+    }
+
+
+    .buttons_table td
+    {
+      border: 0!important;
+      width: 20%;
+    }
